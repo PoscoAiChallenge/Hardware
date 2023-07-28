@@ -15,9 +15,9 @@
 
 MPU9250 mpu;
 SoftwareSerial esp01(txPin, rxPin);
-const char* ssid = "Your_WiFi_SSID";
-const char* password = "Your_WiFi_Password";
-const char* serverUrl = "http://your_server_url/data"; // Replace with your server URL
+const char* ssid = "SSID";
+const char* password = "Password";
+const char* serverUrl = "http://api.ye0ngjae.com"; 
 
 void setup() {
   Wire.begin();
