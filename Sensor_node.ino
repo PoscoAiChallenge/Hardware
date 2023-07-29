@@ -11,6 +11,8 @@
 
 #define rxPin 3
 #define txPin 2
+#define redled 6
+#define blueled 7
 #define sound A0
 #define water A1
 #define vibration A2
@@ -19,7 +21,8 @@ MPU9250 mpu;
 SoftwareSerial esp01(txPin, rxPin);
 const char* ssid = "WiFi_SSID";
 const char* password = "Password";
-const char* serverUrl = "http://api.ye0ngjae.com/data"; // server URL
+const char* dataServerUrl = "http://api.ye0ngjae.com/data";
+const char* logServerUrl = "http://api.ye0ngjae.com/log";
 
 WiFiUDP udp;
 NTPClient ntpClient(udp, "pool.ntp.org");
@@ -54,6 +57,7 @@ void loop() {
   float soundFrequency = SoundValue * 0.1; // 예시: 10 Hz 단위로 변환
 
   // MPU-9250 Data
+  int16_t ax, ay, az, gx, gy, gz;
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
   // JSON Data 생성
@@ -73,20 +77,39 @@ void loop() {
   WiFiClient client;
   HTTPClient http;
 
-  http.begin(client, serverUrl);
+  // 데이터 전송
+  http.begin(client, dataServerUrl);
   http.addHeader("Content-Type", "application/json");
-
   int httpResponseCode = http.POST(jsonString);
-
   if (httpResponseCode > 0) {
-    Serial.print("HTTP Response code: ");
+    Serial.print("Data Sent - HTTP Response code: ");
     Serial.println(httpResponseCode);
   } else {
-    Serial.print("Error in HTTP request: ");
+    Serial.print("Error in Data Sending - HTTP request: ");
     Serial.println(httpResponseCode);
   }
-
   http.end();
 
-  delay(500); // 0.5초마다 데이터 전송
+  // 로그 작성 및 전송
+  StaticJsonDocument<200> logData;
+  logData["tag"] = "Sensor Log";
+  logData["timestamp"] = currentTimestamp;
+  logData["text"] = "Sensor data successfully sent.";
+  String logJsonString;
+  serializeJson(logData, logJsonString);
+
+  // HTTP POST 요청을 통해 로그 전송
+  http.begin(client, logServerUrl);
+  http.addHeader("Content-Type", "application/json");
+  httpResponseCode = http.POST(logJsonString);
+  if (httpResponseCode > 0) {
+    Serial.print("Log Sent - HTTP Response code: ");
+    Serial.println(httpResponseCode);
+  } else {
+    Serial.print("Error in Log Sending - HTTP request: ");
+    Serial.println(httpResponseCode);
+  }
+  http.end();
+
+  delay(100); // 0.1초마다 데이터 전송
 }
