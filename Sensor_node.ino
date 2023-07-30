@@ -21,8 +21,8 @@ MPU9250 mpu;
 SoftwareSerial esp01(txPin, rxPin);
 const char* ssid = "WiFi_SSID";
 const char* password = "Password";
-const char* dataServerUrl = "http://api.ye0ngjae.com/data";
-const char* logServerUrl = "http://api.ye0ngjae.com/log";
+const char* dataServerUrl = "http://server URL";
+const char* logServerUrl = "http://server URL";
 
 WiFiUDP udp;
 NTPClient ntpClient(udp, "pool.ntp.org");
