@@ -34,6 +34,7 @@ if __name__ == "__main__":
                 json_data = json.loads(line)
                 data_type = json_data.get("type")
                 del json_data["type"]
+                json_data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             except json.JSONDecodeError as e:
                 print(f"Failed to parse JSON: {e}")
                 continue
