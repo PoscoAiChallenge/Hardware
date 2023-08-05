@@ -26,7 +26,10 @@ if __name__ == "__main__":
     ser = serial.Serial(SERIAL_PORT, 9600, timeout=0.1)
 
     while True:
-        line = ser.readline().decode('ASCII').strip()
+        try:
+            line = ser.readline().decode('ASCII').strip()
+        except:
+            continue
 
         if line:
             # 시리얼로부터 받은 JSON 데이터를 파싱
