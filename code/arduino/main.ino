@@ -4,7 +4,7 @@
 const int waterPressurePin = A1;
 const int soundPin = A2;
 
-const char* nodeSite = "2"; // 노드 구분을 위한 사이트 이름 (1 또는 2)
+const char* nodeSite = "1"; // 노드 구분을 위한 사이트 이름 (1 또는 2)
 
 void setup() {
   Serial.begin(9600);
@@ -31,17 +31,16 @@ void loop() {
   // 시리얼 통신으로 데이터 전송
   Serial.println(jsonString);
 
-  delay(50); // 0.05초마다 데이터 전송
+  delay(1000); // 1초마다 데이터 전송
 }
 
 
 float getSoundValue() {
+  
   return analogRead(soundPin);
-
 }
 
 float getWaterPressureValue() {
   float waterPressure = analogRead(waterPressurePin);
   return analogRead(waterPressure);
 }
-

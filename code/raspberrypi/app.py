@@ -11,16 +11,16 @@ LOG_API_URL = 'https://api.ye0ngjae.com/log/'
 
 status = True
 
-def send_log_to_server(log):
+def send_log_to_server(hardware_tag, log):
     Log = {
-        "type": "log",
+        "tag": hardware_tag,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "message": log
     }
     Log = json.dumps(Log)
     requests.post(LOG_API_URL, json=Log)
 
-send_log_to_server("Hardware System started")
+send_log_to_server("status","Hardware System started")
 
 @app.route('/')
 def index():
@@ -29,17 +29,21 @@ def index():
 @app.route('/on', methods=['POST'])
 def on():
     global status
-    send_log_to_server("Hardware System turned on")
+    send_log_to_server("status","Hardware System turned on")
 
     while(status == True):
-        site1.serial_read()
-        site2.serial_read()
+        try:
+            site1.serial_read()
+            site2.serial_read()
+        except:
+            send_log_to_server("error","Failed to read serial")
+            continue
 
 @app.route('/off', methods=['POST'])
 def off():
     global status
     status = False
-    send_log_to_server("Hardware System turned off")
+    send_log_to_server("status","Hardware System turned off")
     
 
 if __name__ == "__main__":
