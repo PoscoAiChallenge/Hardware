@@ -33,6 +33,8 @@ def on():
     send_log_to_server("status","Hardware System turned on")
 
     while(status == True):
+        if status == False:
+            break
         try:
             site1.serial_read()
             site2.serial_read()
