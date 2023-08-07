@@ -1,4 +1,4 @@
-import flask
+from flask import Flask, render_template, request
 import requests
 import json
 import threading
@@ -6,7 +6,7 @@ import site1
 import site2
 from datetime import datetime
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 LOG_API_URL = 'https://api.ye0ngjae.com/log/'
 
@@ -26,7 +26,7 @@ send_log_to_server("status", "Hardware System started")
 @app.route('/')
 def index():
     # return index.html
-    return flask.render_template('index.html')
+    return render_template('index.html')
 
 # 백그라운드에서 실행할 함수
 def serial_read_task():
@@ -38,9 +38,9 @@ def serial_read_task():
             site2.serial_read()
         except:
             send_log_to_server("error", "Failed to read serial")
-            continue
+            continue  
 
-@app.route('/on')
+@app.route('/on', methods=['POST'])
 def turn_on():
     global status
     print("Hardware System turned on")
@@ -55,7 +55,7 @@ def turn_on():
 
     return "Hardware System turned on"
 
-@app.route('/off')
+@app.route('/off', methods=['POST'])
 def turn_off():
     global status
     status = False
