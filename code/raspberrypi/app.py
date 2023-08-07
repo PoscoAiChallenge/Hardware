@@ -24,7 +24,8 @@ send_log_to_server("status","Hardware System started")
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    #return index.html
+    return flask.render_template('index.html')
 
 @app.route('/on', methods=['POST'])
 def on():
