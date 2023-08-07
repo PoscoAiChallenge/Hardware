@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 import json
 
-SERIAL_PORT = '/dev/ttyUSB0'  # 아두이노와 연결된 시리얼 포트
+SERIAL_PORT = '/dev/ttyACM0'  # 아두이노와 연결된 시리얼 포트
 
 DATA_API_URL = 'https://api.ye0ngjae.com/data/'
 LOG_API_URL = 'https://api.ye0ngjae.com/log/'
@@ -22,11 +22,14 @@ def send_log_to_server(log):
     else:
         print(f"Failed to send log: {log}")
 
-if __name__ == "__main__":
-    ser = serial.Serial(SERIAL_PORT, 9600, timeout=1)
+def serial_read():
+    ser = serial.Serial(SERIAL_PORT, 9600, timeout=0.1)
 
     while True:
-        line = ser.readline().decode('ASCII').strip()
+        try:
+            line = ser.readline().decode('ASCII').strip()
+        except:
+            continue
 
         if line:
             # 시리얼로부터 받은 JSON 데이터를 파싱
