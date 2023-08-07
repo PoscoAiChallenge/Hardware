@@ -40,9 +40,10 @@ def serial_read_task():
             send_log_to_server("error", "Failed to read serial")
             continue
 
-@app.route('/on', methods=['POST'])
+@app.route('/on')
 def turn_on():
     global status
+    print("Hardware System turned on")
 
     if not status:
         status = True
@@ -54,7 +55,7 @@ def turn_on():
 
     return "Hardware System turned on"
 
-@app.route('/off', methods=['POST'])
+@app.route('/off')
 def turn_off():
     global status
     status = False
