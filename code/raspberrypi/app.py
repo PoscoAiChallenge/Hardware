@@ -31,8 +31,9 @@ def index():
 def on():
     global status
     send_log_to_server("status","Hardware System turned on")
+    
 
-    while(status == True):
+    while(True):
         if status == False:
             break
         try:
@@ -41,12 +42,16 @@ def on():
         except:
             send_log_to_server("error","Failed to read serial")
             continue
+    
+    return "Hardware System turned on"
+
 
 @app.route('/off', methods=['POST'])
 def off():
     global status
     status = False
     send_log_to_server("status","Hardware System turned off")
+    return "Hardware System turned off"
     
 
 if __name__ == "__main__":
