@@ -19,7 +19,7 @@ def send_log_to_server(log):
     log = {
         "tag": "error",
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "message": log
+        "text": log
     }
     log = json.dumps(log)
     response = requests.post(LOG_API_URL, json=log)
