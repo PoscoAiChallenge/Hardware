@@ -35,6 +35,9 @@ if __name__ == "__main__":
             try:
                 json_data = json.loads(line)
                 data_type = json_data.get("type")
+                data_site = json_data.get("site")
+                if data_site != "2":
+                    json_data["site"] = "2"
                 del json_data["type"]
                 json_data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
             except json.JSONDecodeError as e:
