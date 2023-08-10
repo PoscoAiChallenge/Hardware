@@ -9,26 +9,26 @@ DATA_API_URL = 'https://api.ye0ngjae.com/data/'
 LOG_API_URL = 'https://api.ye0ngjae.com/log/'
 
 def send_data_to_server(data):
-    response = requests.post(DATA_API_URL, json=data)
-    if response.status_code == 201:
-        print(f"Data sent successfully: {data}")
-    else:
-        print(f"Failed to send data: {data}")
+    requests.post(DATA_API_URL, json=data)
 
-def send_log_to_server(log):
-    response = requests.post(LOG_API_URL, json=log)
-    if response.status_code == 201:
-        print(f"Log sent successfully: {log}")
-    else:
-        print(f"Failed to send log: {log}")
+def send_log_to_server(status, log):
+    Log = {
+        "tag": status,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "text": log
+    }
+    requests.post(LOG_API_URL, json=Log)
+
+send_log_to_server("status", "site 2, Hardware System started")
 
 if __name__ == "__main__":
-    ser = serial.Serial(SERIAL_PORT, 9600, timeout=0.1)
+    ser = serial.Serial(SERIAL_PORT, 115200, timeout=0.1)
 
     while True:
         try:
             line = ser.readline().decode('ASCII').strip()
         except:
+            send_log_to_server("error", "site 2, Failed to read serial")
             continue
         if line:
             # 시리얼로부터 받은 JSON 데이터를 파싱
@@ -38,7 +38,7 @@ if __name__ == "__main__":
                 del json_data["type"]
                 json_data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
             except json.JSONDecodeError as e:
-                print(f"Failed to parse JSON: {e}")
+                send_log_to_server("error", "site 2, f{e}")
                 continue
 
             # 데이터 타입이 "log"인 경우 로그 API로 전송
@@ -47,4 +47,4 @@ if __name__ == "__main__":
             if data_type == "sensor":
                 send_data_to_server(json_data)
             else:
-                send_log_to_server(json_data)
+                continue
